@@ -8,6 +8,8 @@ typedef struct {
 } Image;
 
 void showImage(Image image, int x, int y);
+void showImageLR(Image image, int x, int y);
+void showImageRL(Image image, int x, int y);
 void setImage(Image *image, int* pixel, int h, int w);
 void mixRGB(Image *img, char* r, char *g, char *b);
 

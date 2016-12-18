@@ -64,6 +64,33 @@ void lcd_clear_screen(int color)
 
 }
 
+void lcd_clear_screen_lr(int color)
+{
+	int i, j;
+	for (j = 0; j < COL; j++)
+		for (i = 0; i < ROW; i++)
+			lcd_draw_pixel(i, j, color);
+
+}
+
+void lcd_clear_screen_rl(int color)
+{
+	int i, j;
+	for (j = COL - 1; j >= 0; j--)
+		for (i = 0; i < ROW; i++)
+			lcd_draw_pixel(i, j, color);
+
+}
+
+void lcd_clear_screen_bu(int color)
+{
+	int i, j;
+	for (i = ROW - 1; i >= 0; i--)
+		for (j = 0; j < COL; j++)
+			lcd_draw_pixel(i, j, color);
+
+}
+
 // 划横线
 void lcd_draw_hline(int row, int col1, int col2, int color)
 {

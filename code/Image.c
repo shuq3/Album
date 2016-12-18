@@ -10,6 +10,24 @@ void showImage(Image image, int x, int y) {
 	}
 }
 
+void showImageLR(Image image, int x, int y) {
+	int i, j;
+	for (j = 0; j < image.width; j++) {
+		for (i = 0; i < image.height; i++) {
+			lcd_draw_pixel(x + i, y + j, image.pixel[i * image.width + j]);
+		}
+	}
+}
+
+void showImageRL(Image image, int x, int y) {
+	int i, j;
+	for (j = image.width - 1; j >= 0; j--) {
+		for (i = 0; i < image.height; i++) {
+			lcd_draw_pixel(x + i, y + j, image.pixel[i * image.width + j]);
+		}
+	}
+}
+
 void setImage(Image *image, int* pixel, int h, int w) {
 	image->pixel = pixel;
 	image->height = h;
