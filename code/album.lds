@@ -7,6 +7,7 @@ SECTIONS {
 			sdram.o
 			nand.o
 			Image.o
+			main.o
 			* (.text)
 	}
 
