@@ -10,10 +10,10 @@ CPPFLAGS   	:= -nostdinc -I$(INCLUDEDIR)
 
 export 	CC AR LD OBJCOPY OBJDUMP INCLUDEDIR CFLAGS CPPFLAGS 
 
-objs := start.o main.o uart.o clock.o lib/libc.a sdram.o lcd.o nand.o 
+objs := start.o main.o uart.o clock.o lib/libc.a sdram.o lcd.o nand.o Image.o
 
 album.bin: $(objs)
-	${LD} -Tlcd.lds -o album.elf $^
+	${LD} -T album.lds -o album.elf $^
 	${OBJCOPY} -O binary -S album.elf $@
 	${OBJDUMP} -D album.elf > album.dis
 

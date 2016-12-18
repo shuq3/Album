@@ -118,12 +118,3 @@ void lcd_draw_circle(void)
 			lcd_draw_pixel(x,y,color);
 		}
 }
-
-void show_img(int *pixels, int height, int width, int x, int y) {
-	int i, j;
-	for (i = 0; i < height; i++) {
-		for (j = 0; j < width; j++) {
-			lcd_draw_pixel(x + i, y + j, pixels[i*width + j]);
-		}
-	}
-}
