@@ -27,3 +27,5 @@
 void do_irq();
 void irq_init(void);
 void wtd_operate(unsigned long uenreset, unsigned long uenint, unsigned long uselectclk, unsigned long uenwtd, unsigned long uprescaler,unsigned long uwtdat, unsigned long uwtcnt);
+
+#endif
