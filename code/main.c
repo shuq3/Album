@@ -69,6 +69,7 @@ int main(void)
   // 初始化LCD控制器
   lcd_init();
 
+  // 清屏
   preTest();
 
   Image image[3];

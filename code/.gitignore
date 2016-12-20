@@ -1,0 +1,7 @@
+# 忽略 Mac 下的不可见文件
+
+*/.DS_Store
+
+# 忽略依赖文件
+include
+lib
