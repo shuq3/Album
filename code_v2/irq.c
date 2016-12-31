@@ -20,10 +20,10 @@ void irq_init() {
 
 	/* 设置中断触发方式为: 下降沿触发 */
 	EINT0CON1 &= ~(0xff0);
-	EINT0CON1 |= 0x440;
-	/* 设置中断触发方式为: 双边沿触发 */
+	EINT0CON1 |= 0x220;
+	/* 设置中断触发方式为: 下降沿触发 */
 	EINT0CON0 &= ~(0xfff);
-	EINT0CON0 |= 0x444;
+	EINT0CON0 |= 0x222;
 
 	/* 禁止屏蔽中断 */
 	EINT0MASK &= ~(0x18003f);
@@ -58,32 +58,54 @@ void do_irq()
 		}
 	} else if (EINT0PEND & (1<<2)) { // K3
 		if (status != STOP) {
-			next_image();
-			lcd_clear_screen_lr(LCD_WHITE);
-			image_show_lr();
-			// delay(100); // led计数（图片序号）显示延时
+			if (status == EDIT) {
+				image_move(0, 10);
+				lcd_clear_screen_bu(LCD_WHITE);
+				image_show();
+			} else {
+				next_image();
+				lcd_clear_screen_lr(LCD_WHITE);
+				image_show_lr();
+			}
 		}
 	} else if (EINT0PEND & (1<<3)) { // K4
 		if (status != STOP) {
-			previous_image();
-			lcd_clear_screen_rl(LCD_WHITE);
-			image_show_rl();
-			// delay(100); // led计数（图片序号）显示延时
+			if (status == EDIT) {
+				image_move(0, -10);
+				lcd_clear_screen(LCD_WHITE);
+				image_show();
+			} else {
+				previous_image();
+				lcd_clear_screen_rl(LCD_WHITE);
+				image_show_rl();
+			}
 		}
 		
 	} else if (EINT0PEND & (1<<4)) { // K5
-		
+		if (status == EDIT) {
+			image_move(10, 0);
+			lcd_clear_screen_lr(LCD_WHITE);
+			image_show_lr();
+		}
 	} else if (EINT0PEND & (1<<5)) { // K6
-		
+		if (status == EDIT) {
+			image_move(-10, 0);
+			lcd_clear_screen_rl(LCD_WHITE);
+			image_show_rl();
+		}
 	} else if (EINT0PEND & (1<<19)) { // K7
+		if (status == START) {
+			status = EDIT;
+		} else if (status == EDIT) {
+			status = START;
+		}
 		
 	} else if (EINT0PEND & (1<<20)) { // K8
 		
 	} else { // timer0中断的中断处理函数
-		printf("timer: EINT0PEND[23] = %d\n", (EINT0PEND >> 23)&1 );
 		// led_cycle_once();
-		static int i = 0;
-		printf("timer interrupt occurred %d times\n", i++);
+		// static int i = 0;
+		// printf("timer interrupt occurred %d times\n", i++);
 		next_image();
 		lcd_clear_screen_lr(LCD_WHITE);
 		image_show_lr();
@@ -97,6 +119,7 @@ void do_irq()
 	/* 清中断 */
 	EINT0PEND   = 0x18003f;
 	VIC0ADDRESS = 0;
+	VIC1ADDRESS = 0;
 }
 
 // 初始化timer

@@ -81,23 +81,23 @@
 
 
 // Standard NAND flash commands
-#define NAND_CMD_READ0		0
-#define NAND_CMD_READ1		1
-#define NAND_CMD_RNDOUT		5
-#define NAND_CMD_PAGEPROG	0x10
-#define NAND_CMD_READOOB	0x50
-#define NAND_CMD_ERASE1		0x60
-#define NAND_CMD_STATUS		0x70
+#define NAND_CMD_READ0			0
+#define NAND_CMD_READ1			1
+#define NAND_CMD_RNDOUT			5
+#define NAND_CMD_PAGEPROG		0x10
+#define NAND_CMD_READOOB		0x50
+#define NAND_CMD_ERASE1			0x60
+#define NAND_CMD_STATUS			0x70
 #define NAND_CMD_STATUS_MULTI	0x71
-#define NAND_CMD_SEQIN		0x80
-#define NAND_CMD_RNDIN		0x85
-#define NAND_CMD_READID		0x90
-#define NAND_CMD_ERASE2		0xd0
-#define NAND_CMD_RESET		0xff
+#define NAND_CMD_SEQIN			0x80
+#define NAND_CMD_RNDIN			0x85
+#define NAND_CMD_READID			0x90
+#define NAND_CMD_ERASE2			0xd0
+#define NAND_CMD_RESET			0xff
 // Extended commands for large page devices
-#define NAND_CMD_READSTART	0x30
+#define NAND_CMD_READSTART		0x30
 #define NAND_CMD_RNDOUTSTART	0xE0
-#define NAND_CMD_CACHEDPROG	0x15
+#define NAND_CMD_CACHEDPROG		0x15
 
 #define MEM_SYS_CFG     (*((volatile unsigned long *)0x7E00F120))
 
@@ -111,7 +111,7 @@ void nand_init(void)
 }
 
 // 读一页，即2048byte
-static int nandll_read_page (unsigned char *buf, unsigned long addr)
+int nandll_read_page(unsigned char *buf, unsigned long addr)
 {
 
 	int i;
@@ -171,8 +171,8 @@ int copy2ddr(unsigned int nand_start, unsigned int ddr_start, unsigned int len)
 }
 
 // 写一页
-int nandll_write_page (unsigned char *buf,
- 					   unsigned long addr) {
+int nandll_write_page(unsigned char *buf,
+ 					  unsigned long addr) {
 	int i;
 	int page_size = 2048;
 

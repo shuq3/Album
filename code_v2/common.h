@@ -1,6 +1,14 @@
 #ifndef __COMMON_H
 #define __COMMON_H
 
+#include "s3c6410map.h"
+#include "stdio.h"
+#include "led.h"
+#include "lcd.h"
+#include "irq.h"
+#include "image.h"
+#include "irq.h"
+
 #define vi *( volatile unsigned int * ) 
 
 #define set_zero( addr, bit ) ( (vi addr) &= ( ~ ( 1 << (bit) ) ) )
@@ -32,20 +40,15 @@ void delay(int n);
 void enter_begining_menu();
 
 typedef enum {
-	STOP, 	// 2'b00
-	START,	// 2'b01
-	RESERVE,
-	AUTO	// 2'b11
+	STOP,
+	START,
+	AUTO,
+	EDIT
 } STATUS;
 
 extern STATUS status;
 
-#include "s3c6410map.h"
-#include "stdio.h"
-#include "led.h"
-#include "lcd.h"
-#include "irq.h"
-#include "image.h"
-#include "irq.h"
+int nandll_read_page(unsigned char *buf, unsigned long addr);
+int nandll_write_page(unsigned char *buf, unsigned long addr);
 
 #endif /* __COMMON_H */

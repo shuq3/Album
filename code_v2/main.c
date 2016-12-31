@@ -32,9 +32,30 @@ void enter_begining_menu() {
 		 "\tAfter starting:\r\n"
 		 "\tpress K4 to show next photo\r\n"
 		 "\tpress K3 to show last photo\r\n"
-		 "\tpress K2 can open/close"
-		 " the function of playing photos automatically\r\n"
+		 "\tpress K2 to enter/exit auto-play mode\r\n"
+		 "\tpress K7 to enter/exit edit mode\r\n"
+		 "\tin edit mode, you can move the photo by K3-K6\r\n"
 		 );
+}
+
+int is_blank(unsigned char *s, int l) {
+	int i;
+	for (i = 0; i < l; i++) {
+		if (s[i] != 0xff)
+			return 0;
+		s[i] = i;
+	}
+	return 1;
+}
+
+int is_consist(unsigned char *s,unsigned char *t, int l) {
+	int i;
+	for (i = 0; i < l; i++) {
+		if (s[i] != t[i])
+			return 0;
+		s[i] = 0;
+	}
+	return 1;
 }
 
 int main() {
@@ -46,6 +67,5 @@ int main() {
 	timer_init(0,65,4,62500*4,0); // 4s
 	led_hex_count_forever();
 	// led_cycle_forever();
-	
 	return 0;
 }
