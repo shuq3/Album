@@ -3,11 +3,11 @@
 void timer_enable()
 {
 	/* 在中断控制器里使能timer0中断 */
-	VIC0INTENABLE |= (1<<23);
+	TCON &= ~(1<<1);
 }
 
 void timer_disable() {
-	VIC0INTENABLE &= ~(1<<23);
+	TCON |= 1<<1;
 }
 
 void irq_init() {
@@ -29,7 +29,7 @@ void irq_init() {
 	EINT0MASK &= ~(0x18003f);
 
 	/* 在中断控制器里使能这些中断 */
-	VIC0INTENABLE |= (0x3); /* bit0: eint0~3, bit1: eint4~11 */
+	VIC0INTENABLE |= (0x800003); /* bit0: eint0~3, bit1: eint4~11 */
 	VIC1INTENABLE |= (0x3); /* bit0: eint12~19,
 							   bit1: eint20~27,
 							   bit21:eint group1~9 */
@@ -152,7 +152,7 @@ void timer_init(
 	TCON |= 1<<1;
 
 	// 清手动更新位
-	TCON &= ~(1<<1);
+	// TCON &= ~(1<<1);
 
 	// 自动加载和启动timer0
 	TCON |= (1<<0)|(1<<3);
