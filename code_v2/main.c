@@ -1,9 +1,9 @@
-#include "s3c6410map.h"
-#include "led.h"
-#include "lcd.h"
-#include "image.h"
+#include "common.h"
 
 #define delay_with_led(time) do {led_flash(); delay(time); led_flash();} while (0)
+
+STATUS status; // STOP, START, AUTOSTART
+
 // 延时
 void delay(volatile int t) {
 	while (t--);
@@ -27,23 +27,23 @@ void play_effect() {
 
 void enter_begining_menu() {
 	lcd_draw_char_reset();
-	puts("\n\twelcome!\r\n");
-	puts("\tpress K1 to start\r\n");
+	puts("\n\twelcome!\r\n"
+		 "\tpress K1 to start\r\n"
+		 "\tAfter starting:\r\n"
+		 "\tpress K4 to show next photo\r\n"
+		 "\tpress K3 to show last photo\r\n"
+		 "\tpress K2 can open/close"
+		 " the function of playing photos automatically\r\n"
+		 );
 }
 
 int main() {
 	led_init();
 	play_effect();
+	status = STOP;
 	enter_begining_menu();
-	
-
-	delay(10000000);
 	image_init();
-	lcd_clear_screen_lr(LCD_WHITE);
-	image_show_lr();
-
 	timer_init(0,65,4,62500*4,0); // 4s
-	timer_enable();//timer_disable();
 	led_hex_count_forever();
 	// led_cycle_forever();
 	

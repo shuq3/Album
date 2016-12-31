@@ -1,5 +1,7 @@
 #include "led.h"
 
+void delay(int n);
+
 // void led_init() {
 // 	GPKCON0 &= ~0xffff0000;
 // 	GPKCON0 |= 0x11110000;

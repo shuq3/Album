@@ -28,6 +28,24 @@ typedef unsigned int u32;
 
 // function declare
 
-int delay(int n);
+void delay(int n);
+void enter_begining_menu();
+
+typedef enum {
+	STOP, 	// 2'b00
+	START,	// 2'b01
+	RESERVE,
+	AUTO	// 2'b11
+} STATUS;
+
+extern STATUS status;
+
+#include "s3c6410map.h"
+#include "stdio.h"
+#include "led.h"
+#include "lcd.h"
+#include "irq.h"
+#include "image.h"
+#include "irq.h"
 
 #endif /* __COMMON_H */

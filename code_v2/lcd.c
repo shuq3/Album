@@ -185,7 +185,7 @@ void lcd_draw_char(unsigned char c)
 		l = TAB_LENTH * 8;
 		_x = curX - curX / l * l;
 		curX += l - _x;
-		if (curX > COL) {
+		if (curX >= COL) {
 			curX = 0;
 			curY += 8;
 			if (curY > ROW)
@@ -214,7 +214,7 @@ void lcd_draw_char(unsigned char c)
 
 	// 光标移动到下一个16*16的位置，首先坐标+16
 	curX += 8;
-	if (curX > COL)
+	if (curX >= COL)
 		curX = 0;
 	// 如果x坐标=0,则y坐标+16
 	if (curX == 0)

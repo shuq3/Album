@@ -170,3 +170,44 @@ int copy2ddr(unsigned int nand_start, unsigned int ddr_start, unsigned int len)
 	return 0;
 }
 
+// 写一页
+int nandll_write_page (unsigned char *buf,
+ 					   unsigned long addr) {
+	int i;
+	int page_size = 2048;
+
+	// 发片选
+	NAND_ENABLE_CE();
+
+	// SerialData Input Command：0x80
+	NFCMD_REG = NAND_CMD_SEQIN;
+	// 发地址
+	NFADDR_REG = 0;
+	NFADDR_REG = 0;
+	NFADDR_REG = (addr) & 0xff;
+	NFADDR_REG = (addr >> 8) & 0xff;
+	NFADDR_REG = (addr >> 16) & 0xff;
+
+	// 连续写2048个字节
+	for(i = 0; i < page_size; i++)
+	{
+		NFDATA8_REG = *buf++;
+	}
+	
+	// Program Command：0x10
+	NFCMD_REG = NAND_CMD_PAGEPROG;
+
+	// 等待数据
+	NF_TRANSRnB();
+
+	// Read Status Command: 0x70
+	NFCMD_REG = NAND_CMD_STATUS;
+	// I/O[0] = 0  Successful program
+	// I/O[0] = 1  Error in program
+	int status = NFDATA8_REG & 0x1;
+
+	// 取消片选
+	NAND_DISABLE_CE();
+
+	return status;
+}

@@ -55,7 +55,7 @@ _reset:
 	// 初始化lcd
 	bl lcd_init
 	// 初始化irq
-	@bl irq_init
+	bl irq_init
 
 	// 重定位，把程序的代码段、数据段复制到它的链接地址去
 	adr r0, _start   			

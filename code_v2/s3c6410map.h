@@ -13,7 +13,7 @@
 
 
 //GPIO控制寄存器
-//		寄存器 			地址 					读/写 	描述 						复位值
+//		寄存器 			地址 					读/写 	描述 					复位值
 #define GPACON		reg32(0x7F008000)		//			uart
 
 #define GPECON		reg32(0x7F008080)		//			lcd display
@@ -28,8 +28,14 @@
 #define GPJPUD		reg32(0x7F008128)
 
 
-#define GPKCON0		reg32(0x7F008800)
+#define GPKCON0		reg32(0x7F008800)		//			led
 #define GPKDAT		reg32(0x7F008808)
+
+
+#define GPNCON		reg32(0x7F008830)		//			keyboard
+#define GPNDAT		reg32(0x7F008834)
+#define GPLCON1		reg32(0x7F008814)
+#define GPLDAT		reg32(0x7F008818)
 
 #define GPMCON		reg32(0x7F008820)		// 读/写 	端口M 配置寄存器 			0x00222222
 #define GPMDAT		reg32(0x7F008824)		// 读/写 	端口M 数据寄存器 			未定义
@@ -65,43 +71,50 @@
 #define DITHMODE		reg32(0x77100170)
 
 // irq
-#define EINT0CON0  			(*((volatile unsigned long *)0x7F008900))
-#define EINT0MASK  			(*((volatile unsigned long *)0x7F008920))
-#define EINT0PEND  			(*((volatile unsigned long *)0x7F008924))
-#define PRIORITY 	    	(*((volatile unsigned long *)0x7F008280))
-#define SERVICE     		(*((volatile unsigned long *)0x7F008284))
-#define SERVICEPEND 		(*((volatile unsigned long *)0x7F008288))
-#define VIC0IRQSTATUS  		(*((volatile unsigned long *)0x71200000))
-#define VIC0FIQSTATUS  		(*((volatile unsigned long *)0x71200004))
-#define VIC0RAWINTR    		(*((volatile unsigned long *)0x71200008))
-#define VIC0INTSELECT  		(*((volatile unsigned long *)0x7120000c))
-#define VIC0INTENABLE  		(*((volatile unsigned long *)0x71200010))
-#define VIC0INTENCLEAR 		(*((volatile unsigned long *)0x71200014))
-#define VIC0PROTECTION 		(*((volatile unsigned long *)0x71200020))
-#define VIC0SWPRIORITYMASK 	(*((volatile unsigned long *)0x71200024))
-#define VIC0PRIORITYDAISY  	(*((volatile unsigned long *)0x71200028))
-#define VIC0ADDRESS        	(*((volatile unsigned long *)0x71200f00))
+#define EINT0CON0			reg32(0x7F008900)
+#define EINT0CON1			reg32(0x7F008904)
+#define EINT0MASK			reg32(0x7F008920)
+#define EINT0PEND			reg32(0x7F008924)
+#define PRIORITY			reg32(0x7F008280)
+#define SERVICE				reg32(0x7F008284)
+#define SERVICEPEND			reg32(0x7F008288)
+#define VIC0IRQSTATUS		reg32(0x71200000)
+#define VIC0FIQSTATUS		reg32(0x71200004)
+#define VIC0RAWINTR			reg32(0x71200008)
+#define VIC0INTSELECT		reg32(0x7120000c)
+#define VIC0INTENABLE		reg32(0x71200010)
+#define VIC0INTENCLEAR		reg32(0x71200014)
+#define VIC0PROTECTION		reg32(0x71200020)
+#define VIC0SWPRIORITYMASK	reg32(0x71200024)
+#define VIC0PRIORITYDAISY	reg32(0x71200028)
+#define VIC0ADDRESS			reg32(0x71200f00)
+#define VIC1INTENABLE		reg32(0x71300010)
+#define VIC1ADDRESS			reg32(0x71300f00)
+
 
 // timer
-#define		PWMTIMER_BASE			(0x7F006000)
-#define		TCFG0    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x00)) )
-#define		TCFG1    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x04)) )
-#define		TCON      	( *((volatile unsigned long *)(PWMTIMER_BASE+0x08)) )
-#define		TCNTB0    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x0C)) )
-#define		TCMPB0    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x10)) )
-#define		TCNTO0    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x14)) )
-#define		TCNTB1    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x18)) )
-#define		TCMPB1    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x1C)) )
-#define		TCNTO1    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x20)) )
-#define		TCNTB2    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x24)) )
-#define		TCMPB2    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x28)) )
-#define		TCNTO2    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x2C)) )
-#define		TCNTB3    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x30)) )
-#define		TCMPB3    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x34)) )
-#define		TCNTO3    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x38)) )
-#define		TCNTB4    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x3C)) )
-#define		TCNTO4    	( *((volatile unsigned long *)(PWMTIMER_BASE+0x40)) )
-#define		TINT_CSTAT 	( *((volatile unsigned long *)(PWMTIMER_BASE+0x44)) )
+#define PWMTIMER_BASE		(0x7F006000)
+#define TCFG0				reg32(PWMTIMER_BASE+0x00)
+#define TCFG1				reg32(PWMTIMER_BASE+0x04)
+#define TCON				reg32(PWMTIMER_BASE+0x08)
+#define TCNTB0				reg32(PWMTIMER_BASE+0x0C)
+#define TCMPB0				reg32(PWMTIMER_BASE+0x10)
+#define TCNTO0				reg32(PWMTIMER_BASE+0x14)
+#define TCNTB1				reg32(PWMTIMER_BASE+0x18)
+#define TCMPB1				reg32(PWMTIMER_BASE+0x1C)
+#define TCNTO1				reg32(PWMTIMER_BASE+0x20)
+#define	TCNTB2				reg32(PWMTIMER_BASE+0x24)
+#define	TCMPB2				reg32(PWMTIMER_BASE+0x28)
+#define	TCNTO2				reg32(PWMTIMER_BASE+0x2C)
+#define	TCNTB3				reg32(PWMTIMER_BASE+0x30)
+#define	TCMPB3				reg32(PWMTIMER_BASE+0x34)
+#define	TCNTO3				reg32(PWMTIMER_BASE+0x38)
+#define	TCNTB4				reg32(PWMTIMER_BASE+0x3C)
+#define	TCNTO4 				reg32(PWMTIMER_BASE+0x40)
+#define	TINT_CSTAT 			reg32(PWMTIMER_BASE+0x44)
+
+// nand
+
 
 
 #endif
