@@ -20,6 +20,7 @@
 
 #include "ff.h"			/* Declarations of FatFs API */
 #include "diskio.h"		/* Declarations of device I/O functions */
+#include "../inst/soft_udivide.h"
 
 /*--------------------------------------------------------------------------
 
@@ -2929,17 +2930,17 @@ BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:Disk er
 	return 2;
 }
 
-unsigned long divide(unsigned long divident, unsigned long divisor) {
-	unsigned long quotient = 0;
-	if (divident == 0) return 0;
-	while (1) {
-		divident -= divisor;
-		quotient++;
-		if (divident == 0) return quotient;
-		if ((divident & 0xf0000000) != (divisor & 0xf0000000)) break;
-	}
-	return quotient - 1;
-}
+// unsigned long divide(unsigned long divident, unsigned long divisor) {
+// 	unsigned long quotient = 0;
+// 	if (divident == 0) return 0;
+// 	while (1) {
+// 		divident -= divisor;
+// 		quotient++;
+// 		if (divident == 0) return quotient;
+// 		if ((divident & 0xf0000000) != (divisor & 0xf0000000)) break;
+// 	}
+// 	return quotient - 1;
+// }
 
 /*-----------------------------------------------------------------------*/
 /* Find logical drive and check if the volume is mounted                 */
@@ -3094,7 +3095,8 @@ FRESULT find_volume (	/* FR_OK(0): successful, !=0: any error occurred */
 		// sysect = nrsv + fasize + (fs->n_rootdir >> 4);	/* RSV + FAT + DIR */
 		if (tsect < sysect) return FR_NO_FILESYSTEM;		/* (Invalid volume size) */
 		// nclst = (tsect - sysect) / fs->csize;				/* Number of clusters */
-		nclst = divide(tsect-sysect, fs->csize);
+		// nclst = divide(tsect-sysect, fs->csize);
+		nclst = soft_udivide(tsect-sysect, fs->csize);
 		if (nclst == 0) return FR_NO_FILESYSTEM;			/* (Invalid volume size) */
 		fmt = FS_FAT32;
 		if (nclst <= MAX_FAT16) fmt = FS_FAT16;
