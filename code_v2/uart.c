@@ -1,4 +1,5 @@
 #include "s3c6410map.h"
+#include "lcd.h"
 
 // 功能:初始化串口
 void init_uart(void)
@@ -33,6 +34,7 @@ void putc(char c)
 {
 	while (UFSTAT0 & (1<<14)); 		// 如果TX FIFO满，等待 
 	UTXH0 = c;                      // 写数据 
+	lcd_draw_char(c);
 }
 
 

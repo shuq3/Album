@@ -25,10 +25,14 @@ void irq_init() {
 	EINT0CON0 &= ~(0xfff);
 	EINT0CON0 |= 0x222;
 
+	EINT0FLTCON0 = (0xbf) | (0xbf<<8) | (0xbf<<16);
+	EINT0FLTCON2 = (0xbf<<8) | (0xbf<<16);
+
 	/* 禁止屏蔽中断 */
 	EINT0MASK &= ~(0x18003f);
 
 	/* 在中断控制器里使能这些中断 */
+	// VIC0INTENABLE |= (1<<23);
 	VIC0INTENABLE |= (0x800003); /* bit0: eint0~3, bit1: eint4~11 */
 	VIC1INTENABLE |= (0x3); /* bit0: eint12~19,
 							   bit1: eint20~27,

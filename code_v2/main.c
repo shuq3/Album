@@ -1,4 +1,5 @@
 #include "common.h"
+#include "sdcard/ff.h"
 
 #define delay_with_led(time) do {led_flash(); delay(time); led_flash();} while (0)
 
@@ -58,14 +59,41 @@ int is_consist(unsigned char *s,unsigned char *t, int l) {
 	return 1;
 }
 
+// 这两个struct比较大，要放在全局，放函数栈里可能会溢出
+FATFS fatFs;		/* FatFs work area needed for each volume */
+FIL file;			/* File object needed for each open file */
+void sdcard_test() {
+	lcd_draw_char_reset();
+	printf("testing sdcard and the FAT file system\r\n");
+	char *memoryBuffer = 0x56000000;
+	int result;
+	int readByte;
+	result = f_mount(&fatFs, "", 0);
+	result = f_open(&file, "test.txt", FA_READ);
+	if (result != FR_OK) {
+		printf("cannot open the file\r\n");
+		return;
+	}
+	/* Read data from the file */
+	f_read(&file, memoryBuffer, 512, &readByte);
+	printf("totally %d bytes has been read.\r\n", readByte);
+	printf("%s\r\n", memoryBuffer);
+
+	f_close(&file);		/* Close the file */
+	while(1);
+}
+
 int main() {
 	led_init();
 	play_effect();
+	// nand_test();
+	sdcard_test();
 	status = STOP;
 	enter_begining_menu();
 	image_init();
 	timer_init(0,65,4,62500*4,0); // 4s
 	led_hex_count_forever();
 	// led_cycle_forever();
+	
 	return 0;
 }

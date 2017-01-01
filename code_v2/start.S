@@ -67,8 +67,6 @@ _reset:
 	bl copy2ddr					
 	cmp r0, #0
 	bne halt
-
-    b on_ddr
 		
 	// 清BSS，把BSS段对应的内存清零
 clean_bss:

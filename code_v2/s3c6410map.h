@@ -73,6 +73,8 @@
 // irq
 #define EINT0CON0			reg32(0x7F008900)
 #define EINT0CON1			reg32(0x7F008904)
+#define EINT0FLTCON0		reg32(0x7F008910)
+#define EINT0FLTCON2		reg32(0x7F008918)
 #define EINT0MASK			reg32(0x7F008920)
 #define EINT0PEND			reg32(0x7F008924)
 #define PRIORITY			reg32(0x7F008280)
