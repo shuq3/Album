@@ -9,7 +9,7 @@
 
 #include "diskio.h"		/* FatFs lower layer API */
 
-#include "sdcard.h"
+#include "../sdcard/sdcard.h"
 #include "../led.h"
 
 /*-----------------------------------------------------------------------*/

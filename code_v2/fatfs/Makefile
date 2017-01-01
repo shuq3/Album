@@ -1,8 +1,8 @@
-objs := system.o sdio.o sdcard.o
+objs := diskio.o ff.o
 
-sd.a: $(objs)
+fat.a: $(objs)
 	${AR} -r -o $@ $^
-	
+
 %.o:%.c
 	${CC} $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
@@ -10,5 +10,5 @@ sd.a: $(objs)
 	${CC} $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f sdcard.a *.o		
+	rm -f fat.a *.o		
 	

@@ -21,7 +21,6 @@
 #include "ff.h"			/* Declarations of FatFs API */
 #include "diskio.h"		/* Declarations of device I/O functions */
 
-
 /*--------------------------------------------------------------------------
 
    Module Private Definitions
@@ -2930,12 +2929,6 @@ BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:Disk er
 	return 2;
 }
 
-
-// void divide(int divident, int divisor, int *quotient, int *remainder) {
-// 	*remainder = divident;
-
-// 	while ()
-// }
 unsigned long divide(unsigned long divident, unsigned long divisor) {
 	unsigned long quotient = 0;
 	if (divident == 0) return 0;
