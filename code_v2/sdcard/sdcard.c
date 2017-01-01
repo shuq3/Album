@@ -923,8 +923,8 @@ SD_Error SD_ReadBlock(u32 BlockAddr, u32 *BlockBuff)
 	}
     //清除所有标志
     SDIO_ClearFlag(SDIO_FLAG_ALL);
- 	volatile int delay;
- 	for (delay = 0; delay < 100; delay++);
+ 	// volatile int delay;
+ 	// for (delay = 0; delay < 100; delay++);
 	return(errorstatus);
 }
 
@@ -1018,8 +1018,8 @@ SD_Error SD_ReadMultiBlocks(u32 BlockAddr, u32 *BlockBuff, u16 NumberOfBlocks)
 		SDIO_ClearFlag(SDIO_FLAG_ALL);	//清除所有中断标志
 		
 	}
-	volatile int delay;
- 	for (delay = 0; delay < 100; delay++);
+	// volatile int delay;
+ // 	for (delay = 0; delay < 100; delay++);
 	return(errorstatus);
 }
 
