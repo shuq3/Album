@@ -10,5 +10,5 @@ sd.a: $(objs)
 	${CC} $(CPPFLAGS) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f sdcard.a *.o		
+	rm -f sd.a *.o		
 	

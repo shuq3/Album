@@ -4020,8 +4020,8 @@ FRESULT f_lseek (
 		fp->fptr = nsect = 0;
 		if (ofs) {
 			bcs = (DWORD)fs->csize * SS(fs);	/* Cluster size (byte) */
-			if (ifptr > 0 &&
-				(ofs - 1) / bcs >= (ifptr - 1) / bcs) {	/* When seek to same or following cluster, */
+			if (ifptr > 0 && soft_udivide(ofs - 1, bcs)
+				 >= soft_udivide(ifptr - 1, bcs) ) {	/* When seek to same or following cluster, */
 				fp->fptr = (ifptr - 1) & ~(FSIZE_t)(bcs - 1);	/* start from the current cluster */
 				ofs -= fp->fptr;
 				clst = fp->clust;
