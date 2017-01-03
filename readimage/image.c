@@ -15,13 +15,9 @@ FIL fpbmp;
 
 Vec2 position;
 
-// unsigned int* OffSet = 0x56000100;    // OffSet from Header part to Data Part
-// long* width = 0x56000200;          // The Width of the Data Part
-// long* height = 0x56000300;         // The Height of the Data Part
 unsigned int OffSet;
 long width;
 long height;
-// int** data;
 
 //***************************
 // private functions
@@ -31,14 +27,12 @@ void image_sync();
 // #ifndef MAKE_PUBLIC
 // #define image_sync() do {this_image = images + image_id;} while (0)
 // #endif
-// void mixRGB(Image *img, char* r, char *g, char *b);
 //***************************
 
 void image_init() {
   image_num = TOTAL_IMAGES;
   image_id = 0;
   readimage();
-  // load_data();
   image_sync();
 }
 
@@ -104,13 +98,6 @@ void image_move(int x, int y) {
   position.y += y;
 }
 
-// void load_data() {
-//   int i;
-//   for (i = 0; i < TOTAL_IMAGES; i++) {
-//     image_set(images + i, ADDR(i), height, width);
-//   }
-// }
-
 void image_sync() {
   this_image = images + image_id;
   position.x = (ROW - this_image->height) / 2;
@@ -146,7 +133,6 @@ void readimage() {
      printf("cannot open the file\r\n");
      return;
     }
-    //  bmpFileTest(fpbmp);                //Test the file is bmp file or not
     bmpHeaderPartLength();        //Get the length of Header Part
     BmpWidthHeight();             //Get the width and width of the Data Part
 
@@ -177,7 +163,7 @@ void bmpDataPart(int id)
       color |= ((int)red   << 16);
       color |= ((int)green << 8 );
       color |= ((int)blue       );
-      ADDR(id)[i*width + j] = color;
+      ADDR(id)[(height-1-j)*height+i] = color;
     }
   }
 }
