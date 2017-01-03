@@ -59,21 +59,6 @@ int is_consist(unsigned char *s,unsigned char *t, int l) {
   return 1;
 }
 
-// void nand_test() {
-// 	char *buffer = (char*) 0x56000000;
-// 	char *buffer2 = (char*) 0x56010000;
-// 	int page_byte = 2048;
-// 	int i;
-// 	for (i = 0; i < page_byte; i++) {
-// 		buffer[i] = i;
-// 	}
-// 	nandll_write_page(buffer, 127);
-// 	nandll_read_page(buffer2, 127);
-// 	for (i = 0; i < page_byte; i++) {
-// 		printf("%d %d\t", buffer2[i], buffer[i]);
-// 	}
-// }
-
 // 这两个struct比较大，要放在全局，放函数栈里可能会溢出
 FATFS fatFs;		/* FatFs work area needed for each volume */
 FIL file;			/* File object needed for each open file */
@@ -92,7 +77,7 @@ void sdcard_test() {
   /* Read data from the file */
   f_read(&file, memoryBuffer, 51200, &readByte);
   printf("totally %d bytes has been read.\r\n", readByte);
-  printf("%s\r\n", memoryBuffer);
+  printf("%c\r\n", memoryBuffer);
 
   f_close(&file);		/* Close the file */
   while(1);
@@ -107,7 +92,5 @@ int main() {
   image_init();
   timer_init(0,65,4,62500*4,0); // 4s
   led_hex_count_forever();
-  // led_cycle_forever();
-
   return 0;
 }
