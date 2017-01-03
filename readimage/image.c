@@ -150,7 +150,7 @@ void readimage() {
     bmpHeaderPartLength();        //Get the length of Header Part
     BmpWidthHeight();             //Get the width and width of the Data Part
 
-    bmpDataPart();                //Reserve the data to file
+    bmpDataPart(i);                //Reserve the data to file
     image_set(images + i, ADDR(i), height, width);
     f_close(&fpbmp);
   }
@@ -164,7 +164,7 @@ void bmpDataPart(int id)
   f_lseek(&fpbmp, OffSet);
   stride=(24 *(int)width+31)/8;
   stride=stride/4 * 4;
-  int color;
+  unsigned long color;
   unsigned char red, green, blue;
   for(j=0;j<height;j++) {
     f_read(&fpbmp, pix, stride, &stride);
@@ -173,7 +173,7 @@ void bmpDataPart(int id)
       red =pix[i*3+2];
       green =pix[i*3+1];
       blue =pix[i*3];
-      color = 0;
+      color = 0xff000000;
       color |= ((int)red   << 16);
       color |= ((int)green << 8 );
       color |= ((int)blue       );

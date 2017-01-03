@@ -92,7 +92,7 @@ _irq:
 	.word irq
 irq:
 	/* 保存现场 */
-	ldr sp, =0x54000000				
+	ldr sp, =0x52000000				
 	sub lr, lr, #4
 	stmdb sp!, {r0-r12, lr}  
 	/* 处理异常 */
