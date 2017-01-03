@@ -3,7 +3,7 @@
 
 #define delay_with_led(time) do {led_flash(); delay(time); led_flash();} while (0)
 
-STATUS status; // STOP, START, AUTOSTART
+STATUS status; // STOP, START, AUTO, EDIT
 
 // 延时
 void delay(volatile int t) {
@@ -39,26 +39,6 @@ void enter_begining_menu() {
      );
 }
 
-int is_blank(unsigned char *s, int l) {
-  int i;
-  for (i = 0; i < l; i++) {
-    if (s[i] != 0xff)
-      return 0;
-    s[i] = i;
-  }
-  return 1;
-}
-
-int is_consist(unsigned char *s,unsigned char *t, int l) {
-  int i;
-  for (i = 0; i < l; i++) {
-    if (s[i] != t[i])
-      return 0;
-    s[i] = 0;
-  }
-  return 1;
-}
-
 // 这两个struct比较大，要放在全局，放函数栈里可能会溢出
 FATFS fatFs;		/* FatFs work area needed for each volume */
 FIL file;			/* File object needed for each open file */
@@ -68,7 +48,6 @@ void sdcard_test() {
   char *memoryBuffer = 0x56000000;
   int result;
   int readByte;
-  result = f_mount(&fatFs, "", 0);
   result = f_open(&file, "1/test.txt", FA_READ);
   if (result != FR_OK) {
     printf("cannot open the file\r\n");
@@ -77,7 +56,7 @@ void sdcard_test() {
   /* Read data from the file */
   f_read(&file, memoryBuffer, 51200, &readByte);
   printf("totally %d bytes has been read.\r\n", readByte);
-  printf("%c\r\n", memoryBuffer);
+  printf("%s\r\n", memoryBuffer);
 
   f_close(&file);		/* Close the file */
   while(1);
@@ -86,10 +65,11 @@ void sdcard_test() {
 int main() {
   led_init();
   play_effect();
-  sdcard_test();
+  f_mount(&fatFs, "", 0);
+  // sdcard_test();
   status = STOP;
-  enter_begining_menu();
   image_init();
+  enter_begining_menu();
   timer_init(0,65,4,62500*4,0); // 4s
   led_hex_count_forever();
   return 0;

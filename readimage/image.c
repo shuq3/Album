@@ -11,14 +11,17 @@ int image_id;
 
 Image images[TOTAL_IMAGES];
 Image *this_image;
-FIL* fpbmp;
+FIL fpbmp;
 
 Vec2 position;
 
-unsigned int* OffSet = 0x56000100;    // OffSet from Header part to Data Part
-long* width = 0x56000200;          // The Width of the Data Part
-long* height = 0x56000300;         // The Height of the Data Part
-int** data;
+// unsigned int* OffSet = 0x56000100;    // OffSet from Header part to Data Part
+// long* width = 0x56000200;          // The Width of the Data Part
+// long* height = 0x56000300;         // The Height of the Data Part
+unsigned int OffSet;
+long width;
+long height;
+// int** data;
 
 //***************************
 // private functions
@@ -34,12 +37,8 @@ void image_sync();
 void image_init() {
   image_num = TOTAL_IMAGES;
   image_id = 0;
-  int i;
-  for (i = 0; i < image_num; i++) {
-    data[i] = ADDR(i);
-  }
   readimage();
-  load_data();
+  // load_data();
   image_sync();
 }
 
@@ -105,12 +104,12 @@ void image_move(int x, int y) {
   position.y += y;
 }
 
-void load_data() {
-  int i;
-  for (i = 0; i < TOTAL_IMAGES; i++) {
-    image_set(images + i, ADDR(i), height, width);
-  }
-}
+// void load_data() {
+//   int i;
+//   for (i = 0; i < TOTAL_IMAGES; i++) {
+//     image_set(images + i, ADDR(i), height, width);
+//   }
+// }
 
 void image_sync() {
   this_image = images + image_id;
@@ -119,13 +118,11 @@ void image_sync() {
 }
 
 void getImageName(char *buffer, int id) {
-  strcpy(buffer, "1/test");
-  int s = 0;  // 十位
-  // 实现除法和取模
-  while (id - 10 >= 0) {
-    id = id - 10;
-    s++;
-  }
+  strcpy(buffer, "photos/");
+  unsigned int s;
+  unsigned int div = 10;
+  soft_udiv(&id, &div, &s);
+
   // 添加十位
   if (s) {
     char ten[] = {(char)(s + '0'), '\0'};
@@ -137,10 +134,11 @@ void getImageName(char *buffer, int id) {
   strcat(buffer, ".bmp");
 }
 
+
 void readimage() {
+  lcd_draw_char_reset();
   int i;
   for (i = 0 ; i < TOTAL_IMAGES; i++) {
-    FIL *fpbmp;
     char str[80];
     getImageName(str, i);
     int openfile = f_open(&fpbmp, str, FA_READ);
@@ -149,36 +147,37 @@ void readimage() {
      return;
     }
     //  bmpFileTest(fpbmp);                //Test the file is bmp file or not
-    bmpHeaderPartLength(fpbmp);        //Get the length of Header Part
-    BmpWidthHeight(fpbmp);             //Get the width and width of the Data Part
+    bmpHeaderPartLength();        //Get the length of Header Part
+    BmpWidthHeight();             //Get the width and width of the Data Part
 
-    bmpDataPart(fpbmp);                //Reserve the data to file
-    f_close(fpbmp);
+    bmpDataPart();                //Reserve the data to file
+    image_set(images + i, ADDR(i), height, width);
+    f_close(&fpbmp);
   }
 }
 
-void bmpDataPart()
+void bmpDataPart(int id)
 {
   int i, j=0;
   int stride;
   unsigned char* pix=0x56000400;
-  f_lseek(fpbmp, OffSet);
+  f_lseek(&fpbmp, OffSet);
   stride=(24 *(int)width+31)/8;
-  stride=stride/4* 4;
+  stride=stride/4 * 4;
   int color;
   unsigned char red, green, blue;
   for(j=0;j<height;j++) {
-    f_read(fpbmp, pix, stride, &stride);
+    f_read(&fpbmp, pix, stride, &stride);
     for(i=0;i<width;i++)
     {
       red =pix[i*3+2];
       green =pix[i*3+1];
       blue =pix[i*3];
-      color |= (1 << 24);
+      color = 0;
       color |= ((int)red   << 16);
       color |= ((int)green << 8 );
       color |= ((int)blue       );
-      data[image_id][j*(int)height + i] = color;
+      ADDR(id)[i*width + j] = color;
     }
   }
 }
@@ -187,19 +186,20 @@ void bmpDataPart()
 void bmpHeaderPartLength()
 {
      int readByte = 4;
-     f_lseek(fpbmp, 10);
-     f_read(fpbmp, OffSet, readByte, &readByte);
-     printf("The Header Part is of length %d.\n", OffSet);
+     f_lseek(&fpbmp, 10);
+     f_read(&fpbmp, &OffSet, readByte, &readByte);
+     printf("The Header Part is of length %d.\r\n", OffSet);
 }
 
 /* To get the width and height of the bmp FIL */
 void BmpWidthHeight()
 {
      int readByte = 4;
-     f_lseek(fpbmp, 18);
-     f_read(fpbmp, width, readByte, &readByte);
-     f_lseek(fpbmp, 22);
-     f_read(fpbmp, height, readByte, &readByte);
-     printf("The Width of the bmp file is %ld.\n", width);
-     printf("The Height of the bmp file is %ld.\n", height);
+     f_lseek(&fpbmp, 18);
+     f_read(&fpbmp, &width, readByte, &readByte);
+     readByte = 4;
+     f_lseek(&fpbmp, 22);
+     f_read(&fpbmp, &height, readByte, &readByte);
+     printf("The Width of the bmp file is %ld.\r\n", width);
+     printf("The Height of the bmp file is %ld.\r\n", height);
 }

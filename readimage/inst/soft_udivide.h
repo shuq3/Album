@@ -7,5 +7,10 @@ typedef unsigned long UINT_TYPE;
 
 UINT_TYPE soft_udivide(UINT_TYPE dividend, UINT_TYPE divisor);
 UINT_TYPE soft_umod(UINT_TYPE dividend, UINT_TYPE divisor);
+void soft_udiv(
+	UINT_TYPE *dividend,
+	UINT_TYPE *divisor,
+	UINT_TYPE *quotient
+	);
 
 #endif
