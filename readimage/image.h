@@ -1,7 +1,7 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
-#define TOTAL_IMAGES	4
+#define TOTAL_IMAGES	47
 
 
 #define RAM(x) 			((unsigned long *)(x))

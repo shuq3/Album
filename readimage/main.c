@@ -70,7 +70,7 @@ int main() {
   status = STOP;
   image_init();
   enter_begining_menu();
-  timer_init(0,65,4,62500*4,0); // 4s
+  timer_init(0,65,4,12500,0); // 0.2s
   led_hex_count_forever();
   return 0;
 }
