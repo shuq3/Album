@@ -164,7 +164,7 @@ void bmpDataPart(int id)
       color |= ((int)red   << 16);
       color |= ((int)green << 8 );
       color |= ((int)blue       );
-      ADDR(id)[(height-1-j)*height+i] = color;
+      ADDR(id)[(height-1-j)*width+i] = color;
     }
   }
 }

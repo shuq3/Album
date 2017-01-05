@@ -1,4 +1,5 @@
 #include "common.h"
+#define MOVESTEP 30
 
 void timer_enable()
 {
@@ -32,7 +33,6 @@ void irq_init() {
   EINT0MASK &= ~(0x18003f);
 
   /* 在中断控制器里使能这些中断 */
-  // VIC0INTENABLE |= (1<<23);
   VIC0INTENABLE |= (0x800003); /* bit0: eint0~3, bit1: eint4~11 */
   VIC1INTENABLE |= (0x3); /* bit0: eint12~19,
                  bit1: eint20~27,
@@ -52,6 +52,8 @@ void do_irq()
       status = STOP;
       enter_begining_menu();
     }
+    EINT0PEND   = 0x1;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<1)) { // K2
     if (status == START) {
       status = AUTO;
@@ -60,70 +62,77 @@ void do_irq()
       status = START;
       timer_disable();
     }
+    EINT0PEND   = 0x2;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<2)) { // K3
     if (status != STOP) {
       if (status == EDIT) {
-        image_move(0, 10);
+        image_move(0, MOVESTEP);
         lcd_clear_screen_bu(LCD_WHITE);
         image_show();
       } else {
         next_image();
-        lcd_clear_screen_lr(LCD_WHITE);
+        // lcd_clear_screen_lr(LCD_WHITE);
         image_show_lr();
       }
     }
+    EINT0PEND   = 0x4;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<3)) { // K4
     if (status != STOP) {
       if (status == EDIT) {
-        image_move(0, -10);
+        image_move(0, - MOVESTEP);
         lcd_clear_screen(LCD_WHITE);
         image_show();
       } else {
         previous_image();
-        lcd_clear_screen_rl(LCD_WHITE);
+        // lcd_clear_screen_rl(LCD_WHITE);
         image_show_rl();
       }
     }
-
+    EINT0PEND   = 0x8;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<4)) { // K5
     if (status == EDIT) {
-      image_move(10, 0);
-      // lcd_clear_screen_lr(LCD_WHITE);
+      image_move(MOVESTEP, 0);
+      lcd_clear_screen_lr(LCD_WHITE);
       image_show_lr();
     }
+    EINT0PEND   = 0x10;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<5)) { // K6
     if (status == EDIT) {
-      image_move(-10, 0);
-      // lcd_clear_screen_rl(LCD_WHITE);
+      image_move(- MOVESTEP, 0);
+      lcd_clear_screen_rl(LCD_WHITE);
       image_show_rl();
     }
+    EINT0PEND   = 0x20;
+    VIC0ADDRESS = 0;
   } else if (EINT0PEND & (1<<19)) { // K7
     if (status == START) {
       status = EDIT;
     } else if (status == EDIT) {
       status = START;
     }
-
+    /* 清中断 */
+    EINT0PEND   = 0x8000f;
+    VIC1ADDRESS = 0;
   } else if (EINT0PEND & (1<<20)) { // K8
-
+    /* 清中断 */
+    EINT0PEND   = 0x10000f;
+    VIC1ADDRESS = 0;
   } else { // timer0中断的中断处理函数
     // led_cycle_once();
-    // static int i = 0;
-    // printf("timer interrupt occurred %d times\n", i++);
     next_image();
     // lcd_clear_screen_lr(LCD_WHITE);
     image_show_lr();
-    delay(100); // led计数（图片序号）显示延时
+    // delay(1000); // led计数（图片序号）显示延时
 
     unsigned long uTmp;
     //清timer0的中断状态寄存器
     uTmp = TINT_CSTAT;
     TINT_CSTAT = uTmp;
   }
-  /* 清中断 */
-  EINT0PEND   = 0x18003f;
-  VIC0ADDRESS = 0;
-  VIC1ADDRESS = 0;
 }
 
 // 初始化timer
