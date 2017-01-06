@@ -126,7 +126,10 @@ void readimage() {
   lcd_draw_char_reset();
   int i;
   for (i = 0 ; i < TOTAL_IMAGES; i++) {
-    printf("Loading image %d from SD card...\r\n", i+1);
+    if (i == 0) {
+      printf("\n\tLoading 47 images from SD card...\r\n");
+      printf("\tPlease waiting for a moment...\r\n");
+    }
     char str[80];
     getImageName(str, i);
     int openfile = f_open(&fpbmp, str, FA_READ);
@@ -149,8 +152,8 @@ void bmpDataPart(int id)
   int stride;
   unsigned char* pix=0x56000400;
   f_lseek(&fpbmp, OffSet);
-  stride=(24 *(int)width+31)/8;
-  stride=stride/4 * 4;
+  stride= (24 *width+31)/8;
+  stride= (stride/4 )* 4;
   unsigned long color;
   unsigned char red, green, blue;
   for(j=0;j<height;j++) {
@@ -175,7 +178,6 @@ void bmpHeaderPartLength()
      int readByte = 4;
      f_lseek(&fpbmp, 10);
      f_read(&fpbmp, &OffSet, readByte, &readByte);
-    //  printf("The Header Part is of length %d.\r\n", OffSet);
 }
 
 /* To get the width and height of the bmp FIL */
@@ -184,9 +186,7 @@ void BmpWidthHeight()
      int readByte = 4;
      f_lseek(&fpbmp, 18);
      f_read(&fpbmp, &width, readByte, &readByte);
-     readByte = 4;
+     int readByte2 = 4;
      f_lseek(&fpbmp, 22);
-     f_read(&fpbmp, &height, readByte, &readByte);
-    //  printf("The Width of the bmp file is %ld.\r\n", width);
-    //  printf("The Height of the bmp file is %ld.\r\n", height);
+     f_read(&fpbmp, &height, readByte2, &readByte2);
 }
