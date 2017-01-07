@@ -76,7 +76,7 @@ void image_set(Image *image, int* dat, int h, int w) {
 }
 
 void next_image() {
-  led_cycle_once();
+  // led_cycle_once();
   image_id++;
   if (image_id == image_num)
     image_id = 0;
