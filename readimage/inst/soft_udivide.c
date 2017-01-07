@@ -18,18 +18,27 @@ void soft_udiv(
 	char l1 = 0;
 	char l2 = 0;
 
-	while (!(1L << (INTL - 2) & *dividend) ) {
-		l1++;
-		*dividend <<= 1;
-	}
 	while ( !(1L << (INTL - 2) & *divisor) ) {
 		l2++;
 		*divisor <<= 1;
 	}
-	l1 = INTL - l1 - 1;
 	l2 = INTL - l2 - 1;
 
-	while ( l1 >= l2 ) {
+	if ( (1L << (INTL - 1) & *dividend) ) {
+		while ( (1L << (INTL - 1) & *dividend) ) {
+			*dividend -= *divisor;
+			(*quotient)++;
+		}
+		l1 = INTL - 1;
+	} else {
+		while ( !(1L << (INTL - 2) & *dividend) ) {
+			l1++;
+			*dividend <<= 1;
+		}
+		l1 = INTL - 1 - l1;
+	}
+	
+	while ( l1 > l2 ) {
 		if (*dividend >= *divisor) {
 			*quotient |= 1;
 			*dividend -= *divisor;
@@ -38,8 +47,11 @@ void soft_udiv(
 		*dividend <<= 1;
 		*quotient <<= 1;
 	}
-	*dividend >>= INTL - l1 - 1;
-	*quotient >>= 1;
+	if (*dividend >= *divisor) {
+		*quotient |= 1;
+		*dividend -= *divisor;
+	}
+	*dividend >>= INTL - 1 - l1;
 }
 
 UINT_TYPE soft_udivide(UINT_TYPE dividend, UINT_TYPE divisor) {
