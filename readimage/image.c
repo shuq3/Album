@@ -11,7 +11,7 @@ int image_id;
 
 Image images[TOTAL_IMAGES];
 Image *this_image;
-FIL fpbmp;
+FIL file;
 
 Vec2 position;
 
@@ -29,8 +29,31 @@ void image_sync();
 // #endif
 //***************************
 
+int atoi(const char* str) {
+	int sum = 0;
+	int i;
+	for (i = 0; str[i] != '\0'; i++) {
+		sum *= 10;
+		sum += str[i] - '0';
+	}
+	return sum;
+}
+
+unsigned int get_total_images() {
+	int openfile = f_open(&file, "photos/photos.ini", FA_READ);
+    if (openfile != FR_OK) {
+     printf("cannot open the file: photos.ini\r\n");
+     return;
+    }
+    char *buffer = 0x56000000;
+    unsigned int has_read;
+    f_read(&file, buffer, 16, &has_read);
+    f_close(&file);
+    return atoi(buffer);
+}
+
 void image_init() {
-  image_num = TOTAL_IMAGES;
+  image_num = get_total_images();
   image_id = 0;
   readimage();
   image_sync();
@@ -125,16 +148,16 @@ void getImageName(char *buffer, int id) {
 void readimage() {
   lcd_draw_char_reset();
   int i;
-  for (i = 0 ; i < TOTAL_IMAGES; i++) {
+  for (i = 0 ; i < image_num; i++) {
     if (i == 0) {
-      printf("\n\tLoading 47 images from SD card...\r\n");
+      printf("\n\tLoading %d images from SD card...\r\n", image_num);
       printf("\tPlease wait for a moment...\r\n");
       printf("\t%2d images has been loaded\r", 0);
     }
     printf("\t%2d\r", i);
     char str[80];
     getImageName(str, i);
-    int openfile = f_open(&fpbmp, str, FA_READ);
+    int openfile = f_open(&file, str, FA_READ);
     if (openfile != FR_OK) {
      printf("cannot open the file\r\n");
      return;
@@ -144,17 +167,17 @@ void readimage() {
 
     bmpDataPart(i);                //Reserve the data to file
     image_set(images + i, ADDR(i), height, width);
-    f_close(&fpbmp);
+    f_close(&file);
   }
 }
 
 unsigned int getBytes(char *buffer, unsigned int size) {
 	unsigned int has_read;
 	if (size < 512) {
-		f_read(&fpbmp, buffer, size, &has_read);
+		f_read(&file, buffer, size, &has_read);
 		return has_read;
 	}
-	f_read(&fpbmp, buffer, 512, &has_read);
+	f_read(&file, buffer, 512, &has_read);
 	return has_read + getBytes(buffer + 512, size - 512);
 }
 
@@ -163,7 +186,7 @@ void bmpDataPart(int id)
   int i, j=0;
   int stride;
   char* pix=0x56000000;
-  f_lseek(&fpbmp, OffSet);
+  f_lseek(&file, OffSet);
   stride= (24 * width + 31) / 8;
   stride &= ~0x3;
   int color;
@@ -188,17 +211,17 @@ void bmpDataPart(int id)
 void bmpHeaderPartLength()
 {
      int readByte = 4;
-     f_lseek(&fpbmp, 10);
-     f_read(&fpbmp, &OffSet, readByte, &readByte);
+     f_lseek(&file, 10);
+     f_read(&file, &OffSet, readByte, &readByte);
 }
 
 /* To get the width and height of the bmp FIL */
 void BmpWidthHeight()
 {
      int readByte = 4;
-     f_lseek(&fpbmp, 18);
-     f_read(&fpbmp, &width, readByte, &readByte);
+     f_lseek(&file, 18);
+     f_read(&file, &width, readByte, &readByte);
      int readByte2 = 4;
-     f_lseek(&fpbmp, 22);
-     f_read(&fpbmp, &height, readByte2, &readByte2);
+     f_lseek(&file, 22);
+     f_read(&file, &height, readByte2, &readByte2);
 }
