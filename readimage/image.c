@@ -129,7 +129,9 @@ void readimage() {
     if (i == 0) {
       printf("\n\tLoading 47 images from SD card...\r\n");
       printf("\tPlease wait for a moment...\r\n");
+      printf("\t%2d images has been loaded\r", 0);
     }
+    printf("\t%2d\r", i);
     char str[80];
     getImageName(str, i);
     int openfile = f_open(&fpbmp, str, FA_READ);
