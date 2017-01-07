@@ -128,7 +128,7 @@ void readimage() {
   for (i = 0 ; i < TOTAL_IMAGES; i++) {
     if (i == 0) {
       printf("\n\tLoading 47 images from SD card...\r\n");
-      printf("\tPlease waiting for a moment...\r\n");
+      printf("\tPlease wait for a moment...\r\n");
     }
     char str[80];
     getImageName(str, i);
