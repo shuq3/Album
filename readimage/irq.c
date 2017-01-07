@@ -26,8 +26,8 @@ void irq_init() {
   EINT0CON0 &= ~(0xfff);
   EINT0CON0 |= 0x222;
 
-  EINT0FLTCON0 = (0xbf) | (0xbf<<8) | (0xbf<<16);
-  EINT0FLTCON2 = (0xbf<<8) | (0xbf<<16);
+  // EINT0FLTCON0 = (0x80) | (0x80<<8) | (0x80<<16);
+  // EINT0FLTCON2 = (0x80<<8) | (0x80<<16);
 
   /* 禁止屏蔽中断 */
   EINT0MASK &= ~(0x18003f);

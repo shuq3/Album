@@ -146,28 +146,38 @@ void readimage() {
   }
 }
 
+unsigned int getBytes(char *buffer, unsigned int size) {
+	unsigned int has_read;
+	if (size < 512) {
+		f_read(&fpbmp, buffer, size, &has_read);
+		return has_read;
+	}
+	f_read(&fpbmp, buffer, 512, &has_read);
+	return has_read + getBytes(buffer + 512, size - 512);
+}
+
 void bmpDataPart(int id)
 {
   int i, j=0;
   int stride;
-  unsigned char* pix=0x56000400;
+  char* pix=0x56000000;
   f_lseek(&fpbmp, OffSet);
-  stride= (24 *width+31)/8;
-  stride= (stride/4 )* 4;
-  unsigned long color;
-  unsigned char red, green, blue;
-  for(j=0;j<height;j++) {
-    f_read(&fpbmp, pix, stride, &stride);
-    for(i=0;i<width;i++)
+  stride= (24 * width + 31) / 8;
+  stride &= ~0x3;
+  int color;
+  char red, green, blue;
+  for(j = 0; j < height; j++) {
+  	getBytes(pix, stride);
+    for(i = 0; i < width; i++)
     {
       red =pix[i*3+2];
       green =pix[i*3+1];
       blue =pix[i*3];
       color = 0xff000000;
-      color |= ((int)red   << 16);
-      color |= ((int)green << 8 );
-      color |= ((int)blue       );
-      ADDR(id)[(height-1-j)*width+i] = color;
+      color |= (red   << 16);
+      color |= (green << 8 );
+      color |= (blue       );
+      ADDR(id)[(height - 1 - j) * width + i] = color;
     }
   }
 }
